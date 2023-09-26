@@ -31,7 +31,8 @@ builder.Services
     .AddSingleton<IJwtServices, JwtServices>()
     .AddScoped<ILandlordServices, LandlordServices>()
     .AddScoped<ISwipeServices, SwipeServices>()
-    .AddScoped<ITenantServices, TenantServices>();
+    .AddScoped<ITenantServices, TenantServices>()
+    .AddScoped<IUserServices, UserServices>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services
     .AddIdentityCore<User>()
