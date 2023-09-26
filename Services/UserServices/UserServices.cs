@@ -19,9 +19,15 @@ public class UserServices: IUserServices
     {
         string userId = _jwtServices.GetIdFromToken(accessToken);
         User user = await _userManager.FindByIdAsync(userId) ?? throw new MyException("User doesn't exist!");
+        Dictionary<string, string> metadata = new()
+        {
+            { "userId", userId }
+        };
         CustomerCreateOptions customerCreateOptions = new()
         {
-            Email = user.Email
+            Email = user.Email,
+            Name = user.UserName,
+            Metadata = metadata
         };
         CustomerService customerService = new();
         Customer customer = await customerService.CreateAsync(customerCreateOptions);

@@ -1,11 +1,11 @@
-using System.Net.Http;
+using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Flatlinq.Models.DTO;
 using Flatlinq.Data;
 
 namespace Flatlinq.Services;
 
-public class AuthServices: IAuthServices
+public class AuthServices : IAuthServices
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
@@ -13,7 +13,7 @@ public class AuthServices: IAuthServices
     private readonly CoreDbContext _coreDbContext;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public AuthServices(UserManager<User> userManager, IJwtServices jwtServices, RoleManager<IdentityRole> roleManager, 
+    public AuthServices(UserManager<User> userManager, IJwtServices jwtServices, RoleManager<IdentityRole> roleManager,
         CoreDbContext coreDbContext, IHttpClientFactory httpClientFactory)
     {
         _userManager = userManager;
@@ -100,7 +100,8 @@ public class AuthServices: IAuthServices
                             User = user
                         }
                         );
-                    } else if (role == "Landlord")
+                    }
+                    else if (role == "Landlord")
                     {
                         _coreDbContext.Landlords?.Add(new Landlord()
                         {
@@ -154,14 +155,38 @@ public class AuthServices: IAuthServices
         throw new MyException("User doesn't exist");
     }
 
-    public async Task FacebookAuthentication(string accessToken)
+    public async Task<TokenReturnDTO> ExternalAuthentication(string accessToken, ExternalAuthenticationEnum authenticationEnum)
     {
         using HttpClient client = _httpClientFactory.CreateClient();
-        client.BaseAddress = new Uri("https://developers.facebook.com/v18.0");
-        var response = await client.GetAsync($"me?access_token={accessToken}");
-        if (!response.IsSuccessStatusCode)
+        if (authenticationEnum == ExternalAuthenticationEnum.Google)
         {
-            throw new MyException("Invalid authentication method");
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
         }
+        string link = authenticationEnum == ExternalAuthenticationEnum.Facebook
+        ? $"https://graph.facebook.com/v18.0/me?access_token={accessToken}"
+        : "https://www.googleapis.com/oauth2/v3/userinfo";
+        HttpResponseMessage response = await client.GetAsync(link);
+        var data = JsonSerializer.Deserialize<Dictionary<string, string>>(
+            await response.Content.ReadAsStringAsync())!;
+        if ((await _userManager.FindByEmailAsync(data["email"])) != null)
+        {
+            throw new MyException("User already exists!");
+        }
+        User user = new()
+        {
+            UserName = data["name"],
+            Email = data["email"]
+        };
+        IdentityResult result = await _userManager.CreateAsync(user);
+        if (!result.Succeeded)
+        {
+            throw new MyException("Something went wrong, please try again later!");
+        }
+        string[] tokens = await GenerateTokens(user);
+        return new TokenReturnDTO
+        {
+            AccessToken = tokens[1],
+            RefreshToken = tokens[0]
+        };
     }
 }

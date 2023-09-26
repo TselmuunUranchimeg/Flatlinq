@@ -62,6 +62,48 @@ public class AuthController : ControllerBase
 		return BadRequest("Email or password is wrong!");
 	}
 
+	[HttpPost("Facebook")]
+	public async Task<ActionResult> FacebookAuthentication(string accessToken)
+	{
+		try
+		{
+			TokenReturnDTO tokens = await _authServices.ExternalAuthentication(accessToken, ExternalAuthenticationEnum.Facebook);
+			Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
+			{
+				HttpOnly = true,
+				SameSite = SameSiteMode.Lax,
+				Expires = DateTimeOffset.Now.AddDays(7)
+			});
+			Response.Headers.Add("Authorization", tokens.AccessToken);
+			return Ok("Successfully logged in user!");
+		}
+		catch (MyException e)
+		{
+			return BadRequest(e.Message);
+		}
+	}
+
+	[HttpPost("Google")]
+	public async Task<ActionResult> GoogleAuthentication(string accessToken)
+	{
+		try
+		{
+			TokenReturnDTO tokens = await _authServices.ExternalAuthentication(accessToken, ExternalAuthenticationEnum.Google);
+			Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
+			{
+				HttpOnly = true,
+				SameSite = SameSiteMode.Lax,
+				Expires = DateTimeOffset.Now.AddDays(7)
+			});
+			Response.Headers.Add("Authorization", tokens.AccessToken);
+			return Ok("Successfully logged in user!");
+		}
+		catch (MyException e)
+		{
+			return BadRequest(e.Message);
+		}
+	}
+
 	[HttpGet("Verify")]
 	public async Task<ActionResult> VerifyTokens()
 	{

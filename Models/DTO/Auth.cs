@@ -2,6 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Flatlinq.Models.DTO;
 
+public enum ExternalAuthenticationEnum
+{
+    Facebook,
+    Google
+}
+
 public class LoginDTO
 {
     [Required]
@@ -13,7 +19,7 @@ public class LoginDTO
     public string Password { get; set; } = "";
 }
 
-public class RegisterDTO: LoginDTO
+public class RegisterDTO : LoginDTO
 {
     [Required]
     [DataType(DataType.Text)]
