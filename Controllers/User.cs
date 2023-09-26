@@ -29,8 +29,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("BankId")]
-    public void VerifyBankId()
+    public async Task<ActionResult> VerifyBankId(string endUserIp)
     {
-        
+        string accessToken = Request.Headers.Authorization!;
+        StartBankIdVerificationDTO data = await _userServices.StartBankIdVerification(endUserIp, accessToken);
+        return Ok(data);
     }
 }
