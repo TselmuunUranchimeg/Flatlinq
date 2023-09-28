@@ -25,7 +25,6 @@ builder.Services.AddDbContext<CoreDbContext>(options =>
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
 builder.Services
-    .AddScoped<IMemoryCache>()
     .AddScoped<IAuthServices, AuthServices>()
     .AddScoped<IHouseServices, HouseServices>()
     .AddSingleton<IJwtServices, JwtServices>()
@@ -64,7 +63,6 @@ app.UseCors(options =>
 {
     options
         .AllowAnyHeader()
-        .AllowAnyOrigin()
         .AllowCredentials();
 });
 
