@@ -128,13 +128,13 @@ URL = /House/{id}
 Response body
 {
     Price: int,
-	Name: string,
-	Description: string,
-	HasInternet: bool,
-	HasElectricity: bool,
-	AllowChildren: bool,
-	AllowPets: bool,
-	AllowSmoking: bool,
+    Name: string,
+    Description: string,
+    HasInternet: bool,
+    HasElectricity: bool,
+    AllowChildren: bool,
+    AllowPets: bool,
+    AllowSmoking: bool,
     Images: string[]
 }
 ```
