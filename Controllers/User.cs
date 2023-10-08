@@ -18,7 +18,7 @@ public class UserController : ControllerBase
         try
         {
             string accessToken = Request.Headers.Authorization!;
-            await _userServices.SubscribeToGold(accessToken);
+            await _userServices.SubscribeToGold(accessToken[7..]);
             return Ok();
         }
         catch (Exception e)
@@ -32,7 +32,7 @@ public class UserController : ControllerBase
     public async Task<ActionResult> VerifyBankId(string endUserIp)
     {
         string accessToken = Request.Headers.Authorization!;
-        StartBankIdVerificationDTO data = await _userServices.StartBankIdVerification(endUserIp, accessToken);
+        StartBankIdVerificationDTO data = await _userServices.StartBankIdVerification(endUserIp, accessToken[7..]);
         return Ok(data);
     }
 }

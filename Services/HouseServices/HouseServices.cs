@@ -28,13 +28,14 @@ public class HouseServices: IHouseServices
         _memoryCache = memoryCache;
         _userManager = userManager;
     }
-    private static void UploadToS3(TransferUtility utility, MemoryStream stream, string key)
+    private static void UploadToS3(TransferUtility utility, MemoryStream stream, 
+        string key, IConfiguration _configuration)
     {
         TransferUtilityUploadRequest request = new()
         {
             Key = key,
             InputStream = stream,
-            BucketName = ""
+            BucketName = _configuration["Aws:BucketName"]!
         };
         utility.Upload(request);
     }
@@ -61,8 +62,8 @@ public class HouseServices: IHouseServices
         );
         TransferUtility utility = new();
         string name = Guid.NewGuid().ToString();
-        UploadToS3(utility, original, name);
-        UploadToS3(utility, blurred, string.Format("Blurred-{0}", name));
+        UploadToS3(utility, original, name, _configuration);
+        UploadToS3(utility, blurred, string.Format("Blurred-{0}", name), _configuration);
         return name;
     }
 
@@ -138,7 +139,9 @@ public class HouseServices: IHouseServices
             {
                 return link;
             }
-            using StreamReader privateKey = File.OpenText("private.pem");
+            string rootDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string privateKeyLocation = Path.Combine(rootDirectory, "private-key.pem");
+            using StreamReader privateKey = File.OpenText(privateKeyLocation);
             link = AmazonCloudFrontUrlSigner.GetCustomSignedURL(
                 protocol: AmazonCloudFrontUrlSigner.Protocol.https,
                 distributionDomain: _configuration["Aws:DistributedDomain"]!,

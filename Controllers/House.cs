@@ -18,7 +18,8 @@ public class HouseController : ControllerBase
     {
         try
         {
-            await _houseServices.CreateHouse(data, Request.Headers.Authorization!);
+            string accessToken = Request.Headers.Authorization!;
+            await _houseServices.CreateHouse(data, accessToken[7..]);
             return Ok("Successfully created house!");
         }
         catch (AWSCommonRuntimeException e)
@@ -39,7 +40,7 @@ public class HouseController : ControllerBase
         try
         {
             string accessToken = Request.Headers.Authorization!;
-            GetHouseResponseDTO data = await _houseServices.GetHouseById(accessToken, id);
+            GetHouseResponseDTO data = await _houseServices.GetHouseById(accessToken[7..], id);
             return Ok(data);
         }
         catch (MyException e)

@@ -45,7 +45,7 @@ public class JwtServices : IJwtServices
     public string GetIdFromToken(string tokenString)
     {
         JwtSecurityTokenHandler tokenHandler = new();
-        tokenHandler.ValidateToken(tokenString[7..], new TokenValidationParameters
+        tokenHandler.ValidateToken(tokenString, new TokenValidationParameters
         {
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!)

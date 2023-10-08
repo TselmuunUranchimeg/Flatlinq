@@ -19,7 +19,8 @@ public class SwipeController: ControllerBase
     [HttpPost]
     public async Task<ActionResult> Swipe(SwipeCardDTO data)
     {
-        await _swipeServices.SwipeCard(Request.Headers.Authorization!, data);
+        string accessToken = Request.Headers.Authorization!;
+        await _swipeServices.SwipeCard(accessToken[7..], data);
         return Ok();
     }
 }

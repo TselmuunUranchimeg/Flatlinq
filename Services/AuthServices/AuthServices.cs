@@ -86,6 +86,7 @@ public class AuthServices : IAuthServices
         }
         if (tokenHeader is not null)
         {
+            tokenHeader = tokenHeader[7..];
             string userId = _jwtServices.GetIdFromToken(tokenHeader);
             Console.WriteLine(userId);
             if (userId != string.Empty)

@@ -4,9 +4,7 @@ using Flatlinq.Services;
 
 namespace Flatlinq.Controllers;
 
-[ApiController]
-[Route("[controller]")]
-[Authorize(Roles = "Landlord")]
+[ApiController, Route("[controller]"), Authorize(Roles = "Landlord")]
 public class LandlordConroller: ControllerBase
 {
     private readonly ILandlordServices _landlordServices;
@@ -17,7 +15,8 @@ public class LandlordConroller: ControllerBase
     [HttpGet("Recommendation")]
     public ActionResult GetRecommendation([FromQuery] int position)
     {
-        ServiceDTO data = _landlordServices.GetRecommendation(Request.Headers["Authorizaiton"]!, position);
+        string accessToken = Request.Headers.Authorization!;
+        ServiceDTO data = _landlordServices.GetRecommendation(accessToken[7..], position);
         return Ok(data);
     }
 }

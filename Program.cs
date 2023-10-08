@@ -1,10 +1,10 @@
-using Flatlinq.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Stripe;
 using System.Text;
+using Flatlinq.Data;
 using Flatlinq.Hubs;
 using Flatlinq.Services;
 
@@ -56,6 +56,8 @@ builder.Services.AddAuthorization();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+StripeConfiguration.ApiKey = builder.Configuration["StripeApiKey"];
 
 var app = builder.Build();
 

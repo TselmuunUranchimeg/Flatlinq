@@ -29,6 +29,7 @@ public class AuthController : ControllerBase
 				Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
 				{
 					HttpOnly = true,
+					Secure = false,
 					SameSite = SameSiteMode.Lax,
 					Expires = DateTimeOffset.Now.AddDays(7)
 				});
@@ -53,6 +54,7 @@ public class AuthController : ControllerBase
 			Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
 			{
 				HttpOnly = true,
+				Secure = false,
 				SameSite = SameSiteMode.Lax,
 				Expires = DateTimeOffset.Now.AddDays(7)
 			});
@@ -71,6 +73,7 @@ public class AuthController : ControllerBase
 			Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
 			{
 				HttpOnly = true,
+				Secure = false,
 				SameSite = SameSiteMode.Lax,
 				Expires = DateTimeOffset.Now.AddDays(7)
 			});
@@ -92,6 +95,7 @@ public class AuthController : ControllerBase
 			Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
 			{
 				HttpOnly = true,
+				Secure = false,
 				SameSite = SameSiteMode.Lax,
 				Expires = DateTimeOffset.Now.AddDays(7)
 			});
@@ -118,6 +122,7 @@ public class AuthController : ControllerBase
 			Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
 			{
 				HttpOnly = true,
+				Secure = false,
 				SameSite = SameSiteMode.Lax,
 				Expires = DateTimeOffset.Now.AddDays(7)
 			});
